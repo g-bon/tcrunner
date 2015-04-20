@@ -17,53 +17,55 @@ import win32com.client
 import argparse
 import time
 
-AppObject = ""
-
 def Stop(message):
     sys.exit(message)
 
-
 def CreateNewInstance(ObjectName):
     try:
-        global AppObject
         AppObject = win32com.client.Dispatch(ObjectName)
-        return True
+        return AppObject
     except:
-        return False
+        return None
 
 def CheckForInstance(ObjectName):
     try:
-        global AppObject
         AppObject = win32com.client.GetActiveObject(ObjectName)
-        return True
+        return AppObject
     except:
-        return False
+        return None
 
 def GetCOMObject(ToolToRun):
-    tcActive = CheckForInstance("TestComplete.TestCompleteApplication")
-    teActive = CheckForInstance("TestExecute.TestExecuteApplication")
+    TC_OLE_PATH = "TestComplete.TestCompleteApplication"
+    TE_OLE_PATH = "TestExecute.TestExecuteApplication"
+    tcObject = CheckForInstance(TC_OLE_PATH)
+    teObject = CheckForInstance(TE_OLE_PATH)
 
     if ToolToRun == "TestComplete":
-        if (teActive):
+        if teObject:
             Stop("TestExecute is already running. Exiting...")
-        else:
-            if (tcActive):
-                return True
-            if CreateNewInstance("TestComplete.TestCompleteApplication"):
-                return True
-            Stop("Cannot start TestComplete. Exiting...")
+
+        if tcObject:
+            return tcObject
+
+        tcObject = CreateNewInstance(TC_OLE_PATH)
+        if tcObject:
+            return tcObject
+
+        Stop("Cannot start TestComplete. Exiting...")
     else:
-        if (tcActive):
+        if tcObject:
             Stop("TestComplete is already running. Exiting...")
-        else:
-            if (teActive):
-                return True
-            if CreateNewInstance("TestExecute.TestExecuteApplication"):
-                return True
-            Stop("Cannot start TestComplete. Exiting...")
+
+        if teObject:
+            return teObject
+
+        teObject = CreateNewInstance(TC_OLE_PATH)
+        if teObject:
+            return teObject
+
+        Stop("Cannot start TestExecute. Exiting...")
 
     return False
-
 
 def main():
     argParser = argparse.ArgumentParser(description="A python test runner for SmartBear TestComplete and TestExecute")
@@ -75,8 +77,11 @@ def main():
     argParser.add_argument("--exit", help="Exit after the execution is completed")
     args = argParser.parse_args()
 
-    global AppObject
-    GetCOMObject(args.tool)
+    AppObject = GetCOMObject(args.tool)
+    if AppObject is None:
+        Stop(args.tool + " COM object not found")
+
+    AppObject.Visible = 1
     if args.silent:
         AppObject.Manager.RunMode = 0
         AppObject.Visible = True
