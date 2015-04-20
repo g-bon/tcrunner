@@ -30,6 +30,5 @@ optional arguments:
    --exit EXIT      Exit after the execution is completed
 ````
 
-## Authors and contributing
-
+## Contributing
 tcrunner has been initially written and is maintained by Gabriele Bonetti but you are very welcome to submit a [pull request](https://help.github.com/articles/using-pull-requests/) for any improvement you might like.
