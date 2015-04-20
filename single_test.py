@@ -1,16 +1,17 @@
-# usage: single_test.py [-h] --tool TOOL --path PATH --project PROJECT
-#                       [--test TEST] [--silent SILENT] [--exit EXIT]
+# usage: single_test.py [-h] [--test TEST] [--silent SILENT] [--exit EXIT] tool path project
 #
 # A python test runner for SmartBear TestComplete and TestExecute
 #
-# Arguments:
-#   -h, --help         show this help message and exit
-#   --tool TOOL        TestComplete | TestExecute
-#   --path PATH        Full path to the .pjs file
-#   --project PROJECT  The project to run, if running a project suite
-#   --test TEST        The test case to run
-#   --silent SILENT    Run test in silent mode
-#   --exit EXIT        Exit after the execution is completed
+# positional arguments:
+#   tool             TestComplete | TestExecute
+#   path             Full path to the project suite (.pjs) file
+#   project          The project to run in the project suite
+#
+# optional arguments:
+#   -h, --help       show this help message and exit
+#   --test TEST      The test case to run
+#   --silent SILENT  Run test in silent mode
+#   --exit EXIT      Exit after the execution is completed
 
 import sys
 import win32com.client
@@ -18,21 +19,24 @@ import argparse
 import time
 
 def Stop(message):
-    sys.exit(message)
+    sys.exit("{} . Exiting...".format(message))
+
 
 def CreateNewInstance(ObjectName):
     try:
-        AppObject = win32com.client.Dispatch(ObjectName)
-        return AppObject
+        AppInstance = win32com.client.Dispatch(ObjectName)
+        return AppInstance
     except:
         return None
 
+
 def CheckForInstance(ObjectName):
     try:
-        AppObject = win32com.client.GetActiveObject(ObjectName)
-        return AppObject
+        AppInstance = win32com.client.GetActiveObject(ObjectName)
+        return AppInstance
     except:
         return None
+
 
 def GetCOMObject(ToolToRun):
     TC_OLE_PATH = "TestComplete.TestCompleteApplication"
@@ -42,7 +46,7 @@ def GetCOMObject(ToolToRun):
 
     if ToolToRun == "TestComplete":
         if teObject:
-            Stop("TestExecute is already running. Exiting...")
+            Stop("TestExecute is already running")
 
         if tcObject:
             return tcObject
@@ -51,10 +55,10 @@ def GetCOMObject(ToolToRun):
         if tcObject:
             return tcObject
 
-        Stop("Cannot start TestComplete. Exiting...")
+        Stop("Cannot start TestComplete")
     else:
         if tcObject:
-            Stop("TestComplete is already running. Exiting...")
+            Stop("TestComplete is already running")
 
         if teObject:
             return teObject
@@ -63,53 +67,53 @@ def GetCOMObject(ToolToRun):
         if teObject:
             return teObject
 
-        Stop("Cannot start TestExecute. Exiting...")
+        Stop("Cannot start TestExecute")
 
     return False
 
 def main():
     argParser = argparse.ArgumentParser(description="A python test runner for SmartBear TestComplete and TestExecute")
-    argParser.add_argument("--tool", help="TestComplete | TestExecute", required=True)
-    argParser.add_argument("--path", help="Full path to the .pjs file", required=True)
-    argParser.add_argument("--project", help="The project to run, if running a project suite", required=True)
+    argParser.add_argument("tool", help="TestComplete | TestExecute")
+    argParser.add_argument("path", help="Full path to the project suite (.pjs) file")
+    argParser.add_argument("project", help="The project to run in the project suite")
     argParser.add_argument("--test", help="The test case to run")
-    argParser.add_argument("--silent", help="Run test in silent mode", default=False)
+    argParser.add_argument("--silent", help="Run test in silent mode")
     argParser.add_argument("--exit", help="Exit after the execution is completed")
     args = argParser.parse_args()
 
-    AppObject = GetCOMObject(args.tool)
-    if AppObject is None:
+    AppInstance = GetCOMObject(args.tool)  # TestComplete or TestExecute instance
+
+    if AppInstance is None:
         Stop(args.tool + " COM object not found")
 
-    AppObject.Visible = 1
-    if args.silent:
-        AppObject.Manager.RunMode = 0
-        AppObject.Visible = True
+    if args.silent is None:
+        AppInstance.Manager.RunMode = 0
+        AppInstance.Visible = 1
     else:
-        AppObject.Manager.RunMode = 3
+        AppInstance.Manager.RunMode = 3
 
-    integration = AppObject.Integration
+    integration = AppInstance.Integration
 
     if integration.IsRunning():
         print("The test is already running. Stop it manually or click 'OK' to force the test to be terminated.")
         integration.Stop()
-        while AppObject.Integration.IsRunning():
-            time.sleep(0.1)
+        while AppInstance.Integration.IsRunning():
+            time.sleep(0.5)
 
     if integration.OpenProjectSuite(args.path) == False:
-        AppObject.Quit()
-        Stop("Cannot open the project (project suite). Please check the path.")
+        AppInstance.Quit()
+        Stop("Cannot open the project")
 
     if args.test != "":
-        AppObject.Integration.RunProjectTestItem(args.project, args.test)
+        AppInstance.Integration.RunProjectTestItem(args.project, args.test)
     else:
-        AppObject.Integration.RunProject(args.project)
+        AppInstance.Integration.RunProject(args.project)
 
-    while AppObject.Integration.IsRunning():
+    while AppInstance.Integration.IsRunning():
         time.sleep(0.5)
 
     if args.exit is not None:
-        AppObject.Quit()
+        AppInstance.Quit()
 
 if __name__ == "__main__":
     main()
