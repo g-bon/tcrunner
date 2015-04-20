@@ -1,5 +1,16 @@
 # usage: single_test.py [-h] --tool TOOL --path PATH --project PROJECT
 #                       [--test TEST] [--silent SILENT] [--exit EXIT]
+#
+# A python test runner for SmartBear TestComplete and TestExecute
+#
+# Arguments:
+#   -h, --help         show this help message and exit
+#   --tool TOOL        TestComplete | TestExecute
+#   --path PATH        Full path to the .pjs file
+#   --project PROJECT  The project to run, if running a project suite
+#   --test TEST        The test case to run
+#   --silent SILENT    Run test in silent mode
+#   --exit EXIT        Exit after the execution is completed
 
 import sys
 import win32com.client
@@ -55,13 +66,13 @@ def GetCOMObject(ToolToRun):
 
 
 def main():
-    argParser = argparse.ArgumentParser(description="A python test executor for testcomplete")
-    argParser.add_argument("--tool", required=True)
-    argParser.add_argument("--path", required=True)
-    argParser.add_argument("--project", required=True)
-    argParser.add_argument("--test")
-    argParser.add_argument("--silent", default=False)
-    argParser.add_argument("--exit")
+    argParser = argparse.ArgumentParser(description="A python test runner for SmartBear TestComplete and TestExecute")
+    argParser.add_argument("--tool", help="TestComplete | TestExecute", required=True)
+    argParser.add_argument("--path", help="Full path to the .pjs file", required=True)
+    argParser.add_argument("--project", help="The project to run, if running a project suite", required=True)
+    argParser.add_argument("--test", help="The test case to run")
+    argParser.add_argument("--silent", help="Run test in silent mode", default=False)
+    argParser.add_argument("--exit", help="Exit after the execution is completed")
     args = argParser.parse_args()
 
     global AppObject
@@ -92,7 +103,7 @@ def main():
     while AppObject.Integration.IsRunning():
         time.sleep(0.5)
 
-    if args.exit != "":
+    if args.exit is not None:
         AppObject.Quit()
 
 if __name__ == "__main__":
