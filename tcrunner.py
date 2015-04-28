@@ -18,6 +18,7 @@ import win32com.client
 import argparse
 import time
 
+
 def Stop(message):
     sys.exit("{} . Exiting...".format(message))
 
@@ -71,6 +72,7 @@ def GetCOMObject(ToolToRun):
 
     return False
 
+
 def main():
     argParser = argparse.ArgumentParser(description="A python test runner for SmartBear TestComplete and TestExecute")
     argParser.add_argument("tool", help="TestComplete | TestExecute")
@@ -104,7 +106,7 @@ def main():
         AppInstance.Quit()
         Stop("Cannot open the project")
 
-    if args.test != "":
+    if args.test is not None:
         AppInstance.Integration.RunProjectTestItem(args.project, args.test)
     else:
         AppInstance.Integration.RunProject(args.project)
@@ -117,4 +119,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
