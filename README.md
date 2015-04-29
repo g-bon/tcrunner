@@ -9,23 +9,28 @@ Here are some of the features:
 - Run project
 - Run suite (In progress)
 - Run in silent mode
-- Configuration file (In progress)
-- Simplified run of single testcase using the testcase name only (In progress, requires configuration file)
+- Configuration file
+- Simplified run of single testcase using the testcase name only
 
 ## Usage
 ````
-Usage: single_test.py [-h] [--test TEST] [--silent SILENT] [--exit EXIT] tool path project
+usage: tcrunner.py [-h] [--conf CONF] [--tool TOOL] [--path PATH]
+                   [--project PROJECT] [--test TEST] [--silent SILENT]
+                   [--exit EXIT]
 
-required arguments:
-   tool             TestComplete | TestExecute
-   path             Full path to the project suite (.pjs) file
-   project          The project to run in the project suite
+examples: python tcrunner.py --conf neo --test 42
+          python tcrunner.py --tool TestComplete --path C:\foo\awesomeApp.pjs --project UiTests --test 42
+          python tcrunner.py --tool TestComplete --path C:\foo\awesomeApp.pjs --project UiTests
 
 optional arguments:
-   -h, --help       show help message and exit
-   --test TEST      The test case to run
-   --silent SILENT  Run test in silent mode
-   --exit EXIT      Exit after the execution is completed
+  -h, --help         show this help message and exit
+  --conf CONF        Name of the configuration specified in tcrunner.config.py
+  --tool TOOL        TestComplete | TestExecute
+  --path PATH        Full path to the project suite (.pjs) file
+  --project PROJECT  The project to run in the project suite
+  --test TEST        The test case to run
+  --silent SILENT    Run test in silent mode
+  --exit EXIT        Exit after the execution is completed
 ````
 
 ## Contributing

@@ -2,7 +2,7 @@
 #                    [--project PROJECT] [--test TEST] [--silent SILENT]
 #                    [--exit EXIT]
 #
-# Examples: python tcrunner.py --conf neo --test 42
+# examples: python tcrunner.py --conf neo --test 42
 #           python tcrunner.py --tool TestComplete --path C:\foo\awesomeApp.pjs --project UiTests --test 42
 #           python tcrunner.py --tool TestComplete --path C:\foo\awesomeApp.pjs --project UiTests
 #
