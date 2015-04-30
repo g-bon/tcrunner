@@ -20,7 +20,7 @@ usage: tcrunner.py [-h] [--conf CONF] [--tool TOOL] [--path PATH]
 
 examples: python tcrunner.py --conf neo --test 42
           python tcrunner.py --tool TestComplete --path C:\foo\awesomeApp.pjs --project UiTests --test 42
-          python tcrunner.py --tool TestComplete --path C:\foo\awesomeApp.pjs --project UiTests
+          python tcrunner.py --tool TestExecute --path C:\foo\awesomeApp.pjs --project UiTests
 
 optional arguments:
   -h, --help         show this help message and exit
