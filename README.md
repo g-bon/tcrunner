@@ -2,7 +2,7 @@
 *tcrunner* is a python test runner for SmartBear [TestComplete](http://smartbear.com/product/testcomplete/overview/) and TestExecute.
 
 ## Why && Features
-I created this script to overcome some of issues I found using the standard TestExecute interface as the impossibility to run single test cases insted of projects, and to have a tool that is easy to use and easier to integrate with other test automation scripts.
+I created this script to overcome some of the issues I found using the standard TestExecute interface, such as the impossibility to run tests at single test granularity, and to have a tool that is easy to use and easier to integrate with other test automation scripts.
 
 Here are some of the features:
 - Run single scripts
